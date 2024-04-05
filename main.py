@@ -8,38 +8,72 @@ import random
 
 pygame.init()
 
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1200, 600
+WIDTH_FLOOR, HEIGHT_FLOOR = 120, 40
+PLAYER_SIZE = 40
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-PLAYER_COLOR = (25, 40, 70)
+PLAYER_COLOR = (225, 140, 170)
+FLOOR_COLOR = (200, 240, 170)
 BLACK = (0, 0, 0)
-ACELERATION = 0.001
-velocity = 2
-player = pygame.Rect(WIDTH // 2, HEIGHT // 2, 25, 25)
+GRAVITY = 2
+velocity = 14
+speed_y = 0
+speed_x = velocity
+player = pygame.Rect(
+    3 * WIDTH // 4 + PLAYER_SIZE, 3 * HEIGHT // 4, PLAYER_SIZE, PLAYER_SIZE
+)
 font = pygame.font.Font(None, 72)
 game_over_text = font.render("GAME OVER", True, (20, 50, 80))
 text_rect = game_over_text.get_rect()
 score = 0
-border_thickness = 2
-floor_random = [True] + [random.choice([True, False]) for i in range(2)]
-for i in range(10):
-    if not floor_random[-2] and not floor_random[-1]:
-        floor_random.append(True)
-    else:
-        floor_random.append(random.choice([True, False]))
-print(floor_random)
-
-floor = [
-    pygame.Rect(
-        (
-            WIDTH // 2 - border_thickness,
-            HEIGHT // 2 + 25 - border_thickness,
-            50 + 2 * border_thickness,
-            20 + 2 * border_thickness,
+border_thickness = 1
+floor_boolean = [False, False]
+floor = []
+floor_border = []
+for i in range(150):
+    floor_border.append(
+        pygame.Rect(
+            (
+                3 * WIDTH // 4 + i * WIDTH_FLOOR,
+                3 * HEIGHT // 4 + PLAYER_SIZE,
+                WIDTH_FLOOR,
+                HEIGHT_FLOOR,
+            )
         )
     )
-]
+
+    aux = floor_boolean[1]
+    if not floor_boolean[0] and not floor_boolean[-1]:
+        floor.append(
+            pygame.Rect(
+                (
+                    3 * WIDTH // 4 + i * WIDTH_FLOOR,
+                    3 * HEIGHT // 4 + PLAYER_SIZE,
+                    WIDTH_FLOOR,
+                    HEIGHT_FLOOR,
+                )
+            )
+        )
+        floor_boolean[1] = True
+    else:
+        if random.choice([True, False]):
+            floor.append(
+                pygame.Rect(
+                    (
+                        3 * WIDTH // 4 + i * WIDTH_FLOOR,
+                        3 * HEIGHT // 4 + PLAYER_SIZE,
+                        WIDTH_FLOOR,
+                        HEIGHT_FLOOR,
+                    )
+                )
+            )
+            floor_boolean[1] = True
+        else:
+            floor_boolean[1] = False
+    floor_boolean[0] = aux
 
 
 def render_score(score):
@@ -54,7 +88,7 @@ def render_score(score):
 """
 Create a BACKGROUND object with your display surface and image.
 """
-bg = BGScrolling.BACKGROUND(screen, pygame.image.load("example-background-1.jpg"))
+bg = BGScrolling.BACKGROUND(screen, pygame.image.load("Gemini_Generated_Image (4).jpg"))
 
 
 """
@@ -89,28 +123,53 @@ while True:
         bg.move_x(-20)
     """
 
-    bg.move_x(-velocity)
-    player.x -= velocity
-    floor.x -= velocity
-
     bg.update()  # This repositions the background
 
     screen.fill((0, 0, 0))
 
-    bg.draw()  # Draws all the images
+    bg.draw()  # Draws all the image
 
     pygame.draw.rect(screen, PLAYER_COLOR, player)
-    if player.x < 0:
+
+    for part in floor:
+        pygame.draw.rect(screen, FLOOR_COLOR, part)
+
+    for border in floor_border:
+        pygame.draw.rect(screen, BLACK, border, border_thickness)
+
+    if player.x < 0 or player.y > 3 * HEIGHT // 4 + 10:
         screen.blit(game_over_text, text_rect)
-        velocity = 0
     else:
         score += 0.1
-        velocity += ACELERATION
+        bg.move_x(-velocity)
+        player.x -= speed_x
+        player.y += speed_y
+        speed_y += GRAVITY
+
+        for part in floor:
+            part.x -= velocity
+            if player.colliderect(part):
+                speed_y = 0
+                speed_x = velocity
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_LEFT]:
+                    player.x += 8
+                    speed_y = -6
+                    speed_x = -2
+                if keys[pygame.K_DOWN]:
+                    player.x += 0
+                    speed_y = -14
+                    speed_x = -2
+                if keys[pygame.K_RIGHT]:
+                    player.x -= 8
+                    speed_y = -22
+                    speed_x = -2
+
+        for border in floor_border:
+            border.x -= velocity
 
     score_text = render_score(score)
     screen.blit(score_text, (2 * WIDTH // 3, 10))
-
-    pygame.draw.rect(screen, BLACK, floor, border_thickness)
 
     pygame.display.update()
     clock.tick(30)
