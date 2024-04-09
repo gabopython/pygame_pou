@@ -15,7 +15,7 @@ PLAYER_SIZE = 40
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-PLAYER_COLOR = (225, 140, 170)
+PLAYER_COLOR = (125, 140, 200)
 FLOOR_COLOR = (200, 240, 170)
 BLACK = (0, 0, 0)
 GRAVITY = 2
