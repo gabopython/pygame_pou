@@ -38,7 +38,7 @@ PLAYER_COLOR = (125, 140, 200)
 FLOOR_COLOR = (200, 240, 170)
 BLACK = (0, 0, 0)
 GRAVITY = 2
-velocity = 14
+velocity = 6
 speed_y = 0
 speed_x = velocity
 player = pygame.Rect(
@@ -196,7 +196,7 @@ while True:
                 speed_x = velocity
                 if totalFingers == 1:
                     player.x += 8
-                    speed_y = -6
+                    speed_y = -20
                     speed_x = -2
                 if totalFingers == 2:
                     player.x += 0
