@@ -19,7 +19,7 @@ PLAYER_COLOR = (125, 140, 200)
 FLOOR_COLOR = (200, 240, 170)
 BLACK = (0, 0, 0)
 GRAVITY = 2
-velocity = 14
+velocity = 6
 speed_y = 0
 speed_x = velocity
 player = pygame.Rect(
@@ -59,7 +59,7 @@ for i in range(150):
         )
         floor_boolean[1] = True
     else:
-        if random.choice([True, False]):
+        if 1:  # random.choice([True, False]):
             floor.append(
                 pygame.Rect(
                     (
@@ -153,16 +153,16 @@ while True:
                 speed_x = velocity
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_LEFT]:
-                    player.x += 8
-                    speed_y = -6
-                    speed_x = -2
-                if keys[pygame.K_DOWN]:
                     player.x += 0
                     speed_y = -14
                     speed_x = -2
+                if keys[pygame.K_DOWN]:
+                    player.x += 8
+                    speed_y = -28
+                    speed_x = -2
                 if keys[pygame.K_RIGHT]:
-                    player.x -= 8
-                    speed_y = -22
+                    player.x += 0
+                    speed_y = -44
                     speed_x = -2
 
         for border in floor_border:
