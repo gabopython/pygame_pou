@@ -195,16 +195,16 @@ while True:
                 speed_y = 0
                 speed_x = velocity
                 if totalFingers == 1:
-                    player.x += 8
-                    speed_y = -20
-                    speed_x = -2
-                if totalFingers == 2:
                     player.x += 0
                     speed_y = -14
                     speed_x = -2
+                if totalFingers == 2:
+                    player.x += 8
+                    speed_y = -28
+                    speed_x = -2
                 if totalFingers == 3:
-                    player.x -= 8
-                    speed_y = -22
+                    player.x -= 0
+                    speed_y = -44
                     speed_x = -2
 
         for border in floor_border:
