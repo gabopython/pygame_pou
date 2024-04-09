@@ -8,6 +8,6 @@ controled with left, down, rigth, heys
 
 
 
-AI branch kkk
+AI branch
 
 controled with ☝️ ✌️ 3 fingers

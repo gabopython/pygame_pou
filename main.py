@@ -5,6 +5,25 @@ import sys
 import BGScrolling
 import random
 
+# AI
+import cv2
+import time
+import HandTrackingModule as htm
+
+wCam, hCam = 640, 480
+
+cap = cv2.VideoCapture(0)
+cap.set(3, wCam)
+cap.set(4, hCam)
+
+
+pTime = 0
+
+detector = htm.handDetector(detectionCon=0.75)
+
+tipIds = [8, 12, 16]
+
+# pygame
 
 pygame.init()
 
@@ -29,6 +48,7 @@ font = pygame.font.Font(None, 72)
 game_over_text = font.render("GAME OVER", True, (20, 50, 80))
 text_rect = game_over_text.get_rect()
 score = 0
+totalFingers = 0
 border_thickness = 1
 floor_boolean = [False, False]
 floor = []
@@ -59,7 +79,7 @@ for i in range(150):
         )
         floor_boolean[1] = True
     else:
-        if random.choice([True, False]):
+        if 1:  # random.choice([True, False]):
             floor.append(
                 pygame.Rect(
                     (
@@ -122,6 +142,29 @@ while True:
     if keys[K_d] or keys[K_RIGHT]:
         bg.move_x(-20)
     """
+    # AI
+    success, img = cap.read()
+    img = detector.findHands(img)
+    lmList = detector.findPosition(img, draw=False)
+    # print(lmList)
+
+    if len(lmList) != 0:
+        fingers = []
+
+        for id in tipIds:
+            if lmList[id][2] < lmList[id - 2][2]:
+                fingers.append(1)
+            else:
+                fingers.append(0)
+
+        # print(fingers)
+        totalFingers = fingers.count(1)
+
+    img = cv2.resize(img, (200, 200))
+    cv2.imshow("Image", img)
+    cv2.waitKey(1)
+
+    # pygame
 
     bg.update()  # This repositions the background
 
@@ -151,16 +194,15 @@ while True:
             if player.colliderect(part):
                 speed_y = 0
                 speed_x = velocity
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_LEFT]:
+                if totalFingers == 1:
                     player.x += 8
                     speed_y = -6
                     speed_x = -2
-                if keys[pygame.K_DOWN]:
+                if totalFingers == 2:
                     player.x += 0
                     speed_y = -14
                     speed_x = -2
-                if keys[pygame.K_RIGHT]:
+                if totalFingers == 3:
                     player.x -= 8
                     speed_y = -22
                     speed_x = -2
