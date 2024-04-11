@@ -1,5 +1,4 @@
 import pygame
-from pygame import Vector2
 from pygame.locals import *
 import sys
 import BGScrolling
@@ -7,7 +6,6 @@ import random
 
 # AI
 import cv2
-import time
 import HandTrackingModule as htm
 
 wCam, hCam = 640, 480
@@ -49,6 +47,9 @@ game_over_text = font.render("GAME OVER", True, (20, 50, 80))
 text_rect = game_over_text.get_rect()
 score = 0
 totalFingers = 0
+totalFingers2 = 0
+totalFingers3 = 0
+counter = 0
 border_thickness = 1
 floor_boolean = [False, False]
 floor = []
@@ -79,7 +80,7 @@ for i in range(150):
         )
         floor_boolean[1] = True
     else:
-        if 1:  # random.choice([True, False]):
+        if random.choice([True, False]):
             floor.append(
                 pygame.Rect(
                     (
@@ -146,7 +147,6 @@ while True:
     success, img = cap.read()
     img = detector.findHands(img)
     lmList = detector.findPosition(img, draw=False)
-    # print(lmList)
 
     if len(lmList) != 0:
         fingers = []
@@ -157,8 +157,14 @@ while True:
             else:
                 fingers.append(0)
 
-        # print(fingers)
         totalFingers = fingers.count(1)
+        if counter > 0:
+            counter -= 1
+        if totalFingers != totalFingers2:
+            counter = 4
+            totalFingers2 = totalFingers
+        if counter == 0:
+            totalFingers3 = totalFingers
 
     img = cv2.resize(img, (200, 200))
     cv2.imshow("Image", img)
@@ -194,15 +200,15 @@ while True:
             if player.colliderect(part):
                 speed_y = 0
                 speed_x = velocity
-                if totalFingers == 1:
+                if totalFingers3 == 1:
                     player.x += 0
                     speed_y = -14
                     speed_x = -2
-                if totalFingers == 2:
+                if totalFingers3 == 2:
                     player.x += 8
                     speed_y = -28
                     speed_x = -2
-                if totalFingers == 3:
+                if totalFingers3 == 3:
                     player.x -= 0
                     speed_y = -44
                     speed_x = -2
