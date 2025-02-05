@@ -1,6 +1,6 @@
 # pygame_pou
 
-[explanation](https://www.tiktok.com/@gabopython/video/7363463761887300870)
+[explanation on tiktok](https://www.tiktok.com/@gabopython/video/7363463761887300870)
 
 
 main branch 
