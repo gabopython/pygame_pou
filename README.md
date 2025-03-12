@@ -5,7 +5,7 @@
 
 main branch 
 
-controled with left, down, rigth, heys
+controled with left, down, rigth keys
 
 
 
